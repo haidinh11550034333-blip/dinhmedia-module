@@ -1,22 +1,23 @@
 #!url=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/locket-gold-dinh-phan.sgmodule
 #!name=Locket Gold Đình Phan
-#!desc=Mở khóa Locket Gold VIP (RevenueCat + Firebase Remote Config).
-#!author=LAMDev
+#!desc=Locket Gold VIP - ĐÌNH MEDIA (bản bọc: chạy script gốc rồi đổi chữ trong cùng một lần)
+#!author=ĐÌNH MEDIA (script gốc: LAMDev)
+#!category=Locket
+
+[Header Rewrite]
+# Xóa ETag của RevenueCat để luôn nhận phản hồi mới
+http-request ^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts|subscribers) header-del x-revenuecat-etag
 
 [Script]
-revenuecat = type=http-response, pattern=^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/leanhminh2104/locketlam/refs/heads/shadowrocket/locketlam/locketlam.js, requires-body=true, max-size=-1, timeout=60
+# 3 luật dưới đây dùng script bọc dinhwrap.js (tự tải script gốc của LAMDev, chạy, rồi đổi chữ)
+revenuecat = type=http-response, pattern=^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts$|subscribers\/[^/]+$), script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhwrap.js?v=w1, requires-body=true, max-size=-1, timeout=60
 
-deleteHeader = type=http-request, pattern=^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts|subscribers), script-path=https://raw.githubusercontent.com/leanhminh2104/locketlam/refs/heads/shadowrocket/locketlam/deleteHeader.js, timeout=60
+locket_rc = type=http-response, pattern=^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+, script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhwrap.js?v=w1, requires-body=true, max-size=-1, timeout=60
 
-locket_rc = type=http-response, pattern=^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+, script-path=https://raw.githubusercontent.com/leanhminh2104/locketlam/refs/heads/shadowrocket/locketlam/locket_remote.js, requires-body=true, max-size=-1, timeout=60
+locket_user = type=http-response, pattern=^https:\/\/api\.locketcamera\.com\/.+, script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhwrap.js?v=w1, requires-body=true, max-size=-1, timeout=60
 
+# Luật request này giữ nguyên script gốc
 locket_badge = type=http-request, pattern=^https:\/\/api\.locketcamera\.com\/changeProfileInfo, script-path=https://raw.githubusercontent.com/leanhminh2104/locketlam/refs/heads/shadowrocket/locketlam/locket_profile.js, timeout=60
-
-locket_user = type=http-response, pattern=^https:\/\/api\.locketcamera\.com\/.+, script-path=https://raw.githubusercontent.com/leanhminh2104/locketlam/refs/heads/shadowrocket/locketlam/locket_profile.js, requires-body=true, max-size=-1, timeout=60
-
-dinh_rc = type=http-response, pattern=^https:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+, script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhmedia.js, requires-body=true, max-size=-1, timeout=60
-
-dinh_api = type=http-response, pattern=^https:\/\/api\.locketcamera\.com\/.+, script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhmedia.js, requires-body=true, max-size=-1, timeout=60
 
 [MITM]
 hostname = %APPEND% api.revenuecat.com, api.rc-backup.com, firebaseremoteconfig.googleapis.com, api.locketcamera.com
