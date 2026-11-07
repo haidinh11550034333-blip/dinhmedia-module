@@ -1,12 +1,10 @@
-// dinhmedia.js - Tùy chỉnh giao diện Locket Gold độc quyền Đình Media
+// dinhmedia.js - Kích hoạt Gold & Đổi thương hiệu Đình Media
 let body = {};
 try {
   body = JSON.parse($response.body);
-} catch (e) {
-  // Tránh lỗi parse JSON nếu body trống
-}
+} catch (e) {}
 
-// 1. Kích hoạt thông tin bản quyền Locket Gold
+// 1. Kích hoạt Locket Gold
 if (body.subscriber) {
   body.subscriber.subscriptions = body.subscriber.subscriptions || {};
   body.subscriber.subscriptions["com.locket.Locket.premium.yearly"] = {
@@ -24,7 +22,7 @@ if (body.subscriber) {
   };
 }
 
-// 2. Tùy chỉnh giao diện thông báo thành công & Thương hiệu Đình Media
+// 2. Thay đổi toàn bộ chữ/giao diện thông báo sang Đình Media
 if (body.data) {
   body.data.title = "Locket Gold VIP - Đình Media 👑";
   body.data.subtitle = "Đã kích hoạt thành công Locket Gold • Đình Media ❤️";
