@@ -32,3 +32,10 @@ if (body.data) {
 }
 
 $done({ body: JSON.stringify(body) });
+// 3. Tùy chỉnh giao diện thông báo sang Đình Media
+if (body.data) {
+  body.data.title = "Locket Gold VIP - Đình Media 👑";
+  body.data.subtitle = "Đã kích hoạt thành công Locket Gold • Đình Media ❤️";
+}
+
+$done({ body: JSON.stringify(body) });
