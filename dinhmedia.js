@@ -1,4 +1,3 @@
-// dinhmedia.js - Gộp xử lý RevenueCat & Firebase RemoteConfig
 let body = {};
 if (typeof $response !== "undefined" && $response.body) {
   try {
@@ -8,7 +7,7 @@ if (typeof $response !== "undefined" && $response.body) {
   }
 }
 
-// A. Xử lý API RevenueCat (Kích hoạt bản quyền Gold)
+// 1. Kích hoạt Locket Gold (RevenueCat)
 if (body.subscriber) {
   body.subscriber.subscriptions = body.subscriber.subscriptions || {};
   body.subscriber.subscriptions["com.locket.Locket.premium.yearly"] = {
@@ -27,14 +26,14 @@ if (body.subscriber) {
   };
 }
 
-// B. Xử lý API Firebase RemoteConfig (Unlock các tính năng ngầm)
+// 2. Mở khóa Firebase RemoteConfig (Locket Features)
 if (body.entries) {
   if (body.entries.can_show_gold_paywall) {
     body.entries.can_show_gold_paywall.value = "true";
   }
 }
 
-// C. Thay đổi thông báo thương hiệu sang Đình Media
+// 3. Đổi tiêu đề thông báo sang thương hiệu Đình Media 👑
 if (body.data) {
   body.data.title = "Locket Gold VIP - Đình Media 👑";
   body.data.subtitle = "Đã kích hoạt thành công Locket Gold • Đình Media ❤️";
