@@ -1,46 +1,33 @@
-// Đổi toàn bộ chữ "độc quyền" / tên tác giả gốc thành ĐÌNH MEDIA (chạy SAU các script gốc)
-
-const BRAND = "ĐÌNH MEDIA";
-const HANDLE = "dinhmedia";          // tên tài khoản dùng cho @handle / link mạng xã hội, sửa theo ý bạn
-const SITE = "DinhMedia.COM";        // chữ hiển thị thay cho DaLyMMo.COM
-const IMAGE_URL = "";                // dán link ảnh vuông của bạn để thay ảnh popup; để trống = không đổi
-
-// Cụm dài đặt trước cụm ngắn. Chỉ thay chữ hiển thị, KHÔNG đụng vào đường link ảnh/script.
-const REPLACEMENTS = [
-  ["Độc Quyền LAMDev", "Độc quyền " + BRAND],
-  ["Locket Gold VIP - LAMDev", "Locket Gold VIP - " + BRAND],
-  ["LocketLAM", "Locket " + BRAND],
-  ["DaLyMMo.COM", SITE],
-  ["LAMDev", BRAND],
-  ["Đinh Duy Vinh", BRAND],
-  ["Duy Vinh", BRAND],
-  ["@duyvinh.09", "@" + HANDLE],
-  ["@duyvinh09", "@" + HANDLE],
-  ["tiktok.com/@duyvinh.09", "tiktok.com/@" + HANDLE],
-  ["instagram.com/duyvinh.09", "instagram.com/" + HANDLE],
-];
-
-// Chuyển ký tự không phải ASCII thành \uXXXX (phòng khi server trả JSON đã escape)
-const esc = (s) =>
-  s.replace(/[^\x00-\x7F]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
-
-let body = $response.body;
-
-if (typeof body === "string" && body.length) {
-  for (const [from, to] of REPLACEMENTS) {
-    body = body.split(from).join(to);
-    body = body.split(esc(from)).join(esc(to));
-    body = body.split(esc(from).toUpperCase()).join(esc(to));
-  }
-
-  // Bắt nốt mọi tiêu đề kiểu "Độc quyền <tên khác>" (ngắn, không chứa dấu nháy/phẩy)
-  body = body.replace(/Độc [Qq]uyền [^"\\,]{1,30}/g, (m) =>
-    m.includes(BRAND) ? m : "Độc quyền " + BRAND
-  );
-
-  if (IMAGE_URL) {
-    body = body.replace(/(\\?"imageURL\\?"\s*:\s*\\?")[^"\\]*(\\?")/g, (m, a, b) => a + IMAGE_URL + b);
-  }
+// dinhmedia.js - Tùy chỉnh giao diện Locket Gold độc quyền Đình Media
+let body = {};
+try {
+  body = JSON.parse($response.body);
+} catch (e) {
+  // Tránh lỗi parse JSON nếu body trống
 }
 
-$done({ body });
+// 1. Kích hoạt thông tin bản quyền Locket Gold
+if (body.subscriber) {
+  body.subscriber.subscriptions = body.subscriber.subscriptions || {};
+  body.subscriber.subscriptions["com.locket.Locket.premium.yearly"] = {
+    is_sandbox: false,
+    ownership_type: "PURCHASED",
+    period_type: "normal",
+    purchase_date: "2026-01-01T00:00:00Z",
+    expires_date: "2099-12-31T23:59:59Z"
+  };
+  body.subscriber.entitlements = body.subscriber.entitlements || {};
+  body.subscriber.entitlements["Gold"] = {
+    expires_date: "2099-12-31T23:59:59Z",
+    product_identifier: "com.locket.Locket.premium.yearly",
+    purchase_date: "2026-01-01T00:00:00Z"
+  };
+}
+
+// 2. Tùy chỉnh giao diện thông báo thành công & Thương hiệu Đình Media
+if (body.data) {
+  body.data.title = "Locket Gold VIP - Đình Media 👑";
+  body.data.subtitle = "Đã kích hoạt thành công Locket Gold • Đình Media ❤️";
+}
+
+$done({ body: JSON.stringify(body) });
