@@ -1,4 +1,4 @@
-// dinhmedia.js - Kích hoạt Locket Gold & Thương hiệu Đình Media
+// dinhmedia.js - Gộp xử lý RevenueCat & Firebase RemoteConfig
 let body = {};
 if (typeof $response !== "undefined" && $response.body) {
   try {
@@ -8,7 +8,7 @@ if (typeof $response !== "undefined" && $response.body) {
   }
 }
 
-// 1. Kích hoạt Locket Gold trong mảng Subscriptions & Entitlements
+// A. Xử lý API RevenueCat (Kích hoạt bản quyền Gold)
 if (body.subscriber) {
   body.subscriber.subscriptions = body.subscriber.subscriptions || {};
   body.subscriber.subscriptions["com.locket.Locket.premium.yearly"] = {
@@ -27,7 +27,14 @@ if (body.subscriber) {
   };
 }
 
-// 2. Đổi toàn bộ tiêu đề & nội dung thông báo thành Đình Media
+// B. Xử lý API Firebase RemoteConfig (Unlock các tính năng ngầm)
+if (body.entries) {
+  if (body.entries.can_show_gold_paywall) {
+    body.entries.can_show_gold_paywall.value = "true";
+  }
+}
+
+// C. Thay đổi thông báo thương hiệu sang Đình Media
 if (body.data) {
   body.data.title = "Locket Gold VIP - Đình Media 👑";
   body.data.subtitle = "Đã kích hoạt thành công Locket Gold • Đình Media ❤️";
