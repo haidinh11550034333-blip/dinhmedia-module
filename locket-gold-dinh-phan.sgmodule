@@ -1,24 +1,15 @@
 #!name=Locket Gold - Đình Media
-#!desc=Kích hoạt Locket Gold & Thẻ chú thích độc quyền Đình Media
+#!desc=Kích hoạt Locket Gold thương hiệu Đình Media
 #!author=ĐÌNH MEDIA
 #!category=Locket
 
 [Header Rewrite]
-# Xóa ETag của RevenueCat để luôn nhận phản hồi mới
 http-request ^https?:\/\/(api\.(revenuecat|rc-backup)\.com)\/.+\/(receipts|subscribers) header-del x-revenuecat-etag
 
 [Script]
-# 1. Bắt gói tin xác thực gói Gold
-locket_revenuecat = type=http-response,pattern=^https?:\/\/(api\.(revenuecat|rc-backup)\.com)\/.+\/(receipts$|subscribers\/[^/]+$),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh1150034333-blip/dinhmedia-module/main/dinhwrap.js
+locket_revenuecat = type=http-response,pattern=^https?:\/\/(api\.(revenuecat|rc-backup)\.com)\/.+\/(receipts$|subscribers\/[^/]+$),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhmedia.js
 
-# 2. Bắt gói tin Firebase Config
-locket_rc = type=http-response,pattern=^https?:\/\/firebaseremoteconfig\.googleapis\.com\/v1\/projects\/locket-4252a\/.+,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh1150034333-blip/dinhmedia-module/main/dinhwrap.js
-
-# 3. Bắt gói tin thông tin User & Badges
-locket_user = type=http-response,pattern=^https?:\/\/api\.locketcamera\.com\/.+,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh1150034333-blip/dinhmedia-module/main/dinhwrap.js
-
-# 4. Bắt gói tin đổi thông tin profile / chú thích
-locket_badge = type=http-request,pattern=^https?:\/\/api\.locketcamera\.com\/changeProfileInfo,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh1150034333-blip/dinhmedia-module/main/dinhwrap.js
+locket_user = type=http-response,pattern=^https?:\/\/api\.locketcamera\.com\/.+,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/haidinh11550034333-blip/dinhmedia-module/main/dinhmedia.js
 
 [MITM]
-hostname = api.revenuecat.com, api.rc-backup.com, firebaseremoteconfig.googleapis.com, api.locketcamera.com
+hostname = api.revenuecat.com, api.rc-backup.com, api.locketcamera.com
