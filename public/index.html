@@ -3,113 +3,444 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nâng cấp Locket Gold</title>
+  <title>Nâng Cấp Locket Gold — Tự Động 24/7</title>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: #f4f6f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
-    .card { background: #fff; width: 100%; max-width: 440px; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    h2 { margin: 0 0 8px; color: #111; font-size: 22px; }
-    p.sub { margin: 0 0 20px; color: #666; font-size: 14px; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #333; }
-    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 16px; font-size: 15px; }
-    button { width: 100%; padding: 13px; background: #f59e0b; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
-    button:disabled { background: #fcd34d; cursor: not-allowed; }
-    .box { margin-top: 18px; padding: 14px; border-radius: 10px; font-size: 14px; display: none; word-break: break-all; }
-    .box.ok { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; display: block; }
-    .box.err { background: #fef2f2; border: 1px solid #ef4444; color: #991b1b; display: block; }
-    .btn-link { display: inline-block; margin-top: 10px; padding: 10px 14px; background: #10b981; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; }
+    :root {
+      --blue: #1649e6;
+      --blue-soft: #eff6ff;
+      --gold: #f59e0b;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #dbeafe;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      color: var(--text);
+      background-color: #f8fafc;
+      background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+      background-size: 28px 28px;
+      min-height: 100vh;
+    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+    /* Header */
+    header { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 30; }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .brand { font-size: 20px; font-weight: 800; color: var(--blue); text-decoration: none; }
+    .nav-pills { display: flex; background: #f1f5f9; padding: 4px; border-radius: 999px; gap: 4px; }
+    .nav-pills a { text-decoration: none; color: #475569; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; }
+    .nav-pills a.active { background: var(--blue); color: #fff; }
+
+    /* Main 2-column grid */
+    .main-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 20px; padding: 24px 0 48px; align-items: start; }
+    .card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 6px 24px rgba(15,23,42,0.04); margin-bottom: 18px; }
+
+    /* OS Switcher */
+    .os-title { text-align: center; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+    .os-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f1f5f9; padding: 5px; border-radius: 14px; }
+    .os-btn { border: none; background: transparent; padding: 11px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; color: #475569; transition: 0.2s; }
+    .os-btn.active { background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgba(22,73,230,0.25); }
+
+    /* Blue Banner */
+    .banner { background: linear-gradient(135deg, #1d4ed8, #1440c4); color: #fff; border-radius: 20px; padding: 24px; margin-bottom: 18px; }
+    .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
+    .pill-gold { background: #fbbf24; color: #111; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; }
+    .pill-dark { background: rgba(0,0,0,0.25); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; }
+    .banner h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+    .banner-checks { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
+    .banner-checks span { background: rgba(255,255,255,0.16); padding: 4px 10px; border-radius: 999px; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mini-item { background: #fff; color: var(--text); padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; }
+
+    /* Lookup Form */
+    .input-row { display: flex; gap: 10px; margin-top: 8px; }
+    .input-row input { flex: 1; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; outline: none; }
+    .input-row input:focus { border-color: var(--blue); }
+    .btn-blue { background: var(--blue); color: #fff; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .btn-blue:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Step 2: Check Result & Packages */
+    .res-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
+    .badge-warn { background: #fef3c7; color: #b45309; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+    .badge-ok { background: #dcfce7; color: #15803d; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+
+    .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .pkg-card { border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: 0.15s; background: #fff; position: relative; }
+    .pkg-card:hover { border-color: #93c5fd; }
+    .pkg-card.active { border: 2px solid #f59e0b; background: #fffbeb; }
+    .pkg-card.full { grid-column: span 2; }
+    .pkg-hot { display: inline-block; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-right: 4px; }
+    .pkg-price { font-size: 20px; font-weight: 800; color: #dc2626; margin: 6px 0 2px; }
+    .pkg-days { font-size: 12px; color: var(--muted); }
+
+    .voucher-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin: 16px 0; }
+    .voucher-box label { display: block; font-size: 11px; font-weight: 800; color: #475569; margin-bottom: 8px; }
+
+    /* Step 3: VietQR & Activation */
+    .qr-wrap { border: 1.5px solid #bfdbfe; border-radius: 18px; padding: 20px; text-align: center; background: #fafcff; }
+    .qr-img { width: 220px; height: 220px; object-fit: contain; border-radius: 14px; border: 1px solid #e2e8f0; background: #fff; padding: 8px; margin: 14px auto; display: block; }
+    .order-info { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; text-align: left; margin-bottom: 14px; }
+    .order-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
+    .order-row:last-child { border-bottom: none; }
+    .code-tag { background: #eff6ff; color: var(--blue); font-weight: 800; padding: 3px 8px; border-radius: 6px; }
+
+    /* Right Column Guide */
+    .guide-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .guide-item { display: flex; gap: 12px; background: #f1f5ff; border: 1px solid #dbeafe; padding: 12px; border-radius: 14px; align-items: flex-start; }
+    .guide-num { min-width: 26px; height: 26px; background: var(--blue); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .guide-item h4 { font-size: 14px; margin-bottom: 2px; }
+    .guide-item p { font-size: 12px; color: #475569; line-height: 1.4; }
+
+    .msg-box { margin-top: 12px; padding: 12px 14px; border-radius: 12px; font-size: 13px; text-align: left; }
+    .msg-ok { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; }
+    .msg-err { background: #fef2f2; border: 1px solid #ef4444; color: #991b1b; }
+
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .nav-pills { display: none; }
+    }
+    @media (max-width: 520px) {
+      .pkg-grid, .mini-grid { grid-template-columns: 1fr; }
+      .pkg-card.full { grid-column: span 1; }
+      .input-row { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Kích hoạt Locket Gold</h2>
-    <p class="sub">Nhập username Locket và mã xác nhận do shop cung cấp.</p>
+  <header>
+    <div class="container nav">
+      <a href="#" class="brand">👑 Locket Gold</a>
+      <nav class="nav-pills">
+        <a href="#">Trang chủ</a>
+        <a href="#" class="active">Nâng Gold</a>
+        <a href="#huong-dan">Hướng dẫn</a>
+      </nav>
+    </div>
+  </header>
 
-    <label for="username">Username Locket</label>
-    <input id="username" type="text" placeholder="Ví dụ: nguyenvana" />
+  <main class="container main-grid">
+    <!-- Cột trái -->
+    <div>
+      <!-- Chọn hệ điều hành -->
+      <div class="card">
+        <div class="os-title">Chọn hệ điều hành bạn đang sử dụng</div>
+        <div class="os-tabs">
+          <button id="osIos" class="os-btn active" onclick="selectOS('ios')">👑 Locket iOS</button>
+          <button id="osAndroid" class="os-btn" onclick="selectOS('android')">📱 Locket Android</button>
+        </div>
+      </div>
 
-    <label for="duration">Chọn gói</label>
-    <select id="duration">
-      <option value="365">365 Ngày</option>
-    </select>
+      <!-- Banner -->
+      <div class="banner">
+        <div class="banner-top">
+          <span id="osBadge" class="pill-gold">📱 Locket Gold iOS</span>
+          <span class="pill-dark">● Kích hoạt tự động 24/7</span>
+        </div>
+        <h1 id="osTitle">Kích hoạt Locket Gold iOS</h1>
+        <div class="banner-checks">
+          <span>✓ Hồ sơ DNS riêng</span>
+          <span>✓ Không cần mật khẩu iCloud</span>
+        </div>
+        <div class="mini-grid">
+          <div class="mini-item">🎥 Quay video 30 giây</div>
+          <div class="mini-item">✨ Mở khoá Full Caption</div>
+          <div class="mini-item">⚡ Cấp hồ sơ tự động</div>
+          <div class="mini-item">👁️ Full tính năng VIP</div>
+        </div>
+      </div>
 
-    <label for="accessCode">Mã xác nhận đơn</label>
-    <input id="accessCode" type="text" placeholder="Nhập mã shop đã cấp" />
+      <!-- Kiểm tra trạng thái -->
+      <div class="card">
+        <h3 style="font-size:16px;">🔑 Kiểm tra &amp; Kích hoạt</h3>
+        <p style="font-size:13px;color:var(--muted);margin-top:2px;">Dán link Locket hoặc nhập Username để kiểm tra và chọn gói</p>
+        <div style="margin-top:12px;">
+          <label style="font-size:13px;font-weight:700;">Username hoặc Link Locket <span style="color:#ef4444;">*</span></label>
+          <div class="input-row">
+            <input id="usernameInput" type="text" placeholder="VD: locket.com/username hoặc username" />
+            <button id="btnCheck" class="btn-blue" onclick="checkStatus()">🔍 Kiểm tra trạng thái</button>
+          </div>
+        </div>
+      </div>
 
-    <button id="submitBtn" onclick="activate()">Kích hoạt ngay</button>
+      <!-- Kết quả kiểm tra + Chọn gói -->
+      <div id="resultCard" class="card" style="display:none;">
+        <div class="res-head">
+          <strong style="color:var(--blue);font-size:15px;">✓ Kết quả kiểm tra</strong>
+          <span id="statusBadge" class="badge-warn">● Chưa kích hoạt</span>
+        </div>
 
-    <div id="result" class="box"></div>
-  </div>
+        <!-- Màn chọn gói -->
+        <div id="packageSection">
+          <div style="text-align:center;">
+            <h3 style="font-size:18px;">Chọn gói Locket Gold</h3>
+            <p style="font-size:13px;color:var(--muted);">Chọn gói và quét mã VietQR để thanh toán</p>
+          </div>
+          <div id="pkgGrid" class="pkg-grid"></div>
+
+          <div class="voucher-box">
+            <label>✨ MÃ KHUYẾN MÃI / VOUCHER</label>
+            <div class="input-row" style="margin-top:0;">
+              <input id="voucherInput" type="text" placeholder="NHẬP MÃ GIẢM GIÁ (NẾU CÓ)..." />
+              <button class="btn-blue" style="background:#64748b;" onclick="applyVoucher()">ÁP DỤNG</button>
+            </div>
+            <div id="voucherMsg" style="font-size:12px;margin-top:6px;"></div>
+          </div>
+
+          <button id="btnPay" class="btn-blue" style="width:100%;padding:14px;font-size:15px;" onclick="showPayment()">🔑 Thanh toán 10.000đ để kích hoạt</button>
+        </div>
+
+        <!-- Màn thanh toán VietQR + Nhập mã kích hoạt -->
+        <div id="paymentSection" style="display:none;">
+          <div class="qr-wrap">
+            <span class="pill-dark" style="background:#dbeafe;color:var(--blue);">⚡ Thanh toán VietQR • MB Bank</span>
+            <h3 style="margin-top:8px;font-size:18px;">Quét mã VietQR để thanh toán</h3>
+            <p style="font-size:12px;color:var(--muted);">Chuyển khoản đúng số tiền &amp; nội dung bên dưới</p>
+            <img id="qrImage" class="qr-img" src="" alt="VietQR MB Bank" />
+
+            <div class="order-info">
+              <div class="order-row"><span>Ngân hàng / STK:</span><strong>MB Bank — 0775065697</strong></div>
+              <div class="order-row"><span>Mã đơn hàng:</span><strong id="orderIdText" style="color:var(--blue);">#000000</strong></div>
+              <div class="order-row"><span>Số tiền:</span><strong id="orderAmountText" style="color:#dc2626;">10.000đ</strong></div>
+              <div class="order-row"><span>Gói:</span><strong id="orderPkgText">1 tháng</strong></div>
+              <div class="order-row"><span>Nội dung:</span><span id="orderNoteText" class="code-tag">LG 000000</span></div>
+            </div>
+
+            <div style="text-align:left;background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:12px;">
+              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Nhập Mã xác nhận đơn (nhận từ shop sau khi chuyển khoản):</label>
+              <div class="input-row" style="margin-top:0;">
+                <input id="accessCodeInput" type="text" placeholder="Nhập mã xác nhận..." />
+                <button id="btnActivate" class="btn-blue" onclick="confirmActivate()">Kích hoạt ngay</button>
+              </div>
+            </div>
+            <div id="activateMsg"></div>
+            <button onclick="backToPackages()" style="margin-top:12px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;">← Đổi gói khác</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải: Hướng dẫn -->
+    <aside id="huong-dan" class="card">
+      <h3 id="guideTitle" style="font-size:16px;">📱 Hướng dẫn cài đặt Locket iOS</h3>
+      <div id="guideList" class="guide-list"></div>
+    </aside>
+  </main>
 
   <script>
-    // Tải danh sách gói từ API của bạn
-    async function loadPackages() {
-      try {
-        const res = await fetch('/api/packages');
-        const json = await res.json();
-        const list = Array.isArray(json.data) ? json.data : (Array.isArray(json) ? json : []);
-        if (list.length > 0) {
-          const select = document.getElementById('duration');
-          select.innerHTML = list.map(pkg => {
-            const days = pkg.durationDays || pkg.days || 365;
-            const name = pkg.name || pkg.packageName || (days + ' Ngày');
-            return `<option value="${days}">${name}</option>`;
-          }).join('');
-        }
-      } catch (e) {
-        console.log('Dùng gói mặc định');
-      }
+    const BANK_ID = 'MB';
+    const ACCOUNT_NO = '0775065697';
+
+    let currentOS = 'ios';
+    let packages = [
+      { id: 1, name: '1 tháng', price: 10000, durationDays: 30, hot: true },
+      { id: 2, name: '3 tháng', price: 27000, durationDays: 90, hot: true },
+      { id: 3, name: '6 tháng', price: 50000, durationDays: 180, hot: true },
+      { id: 4, name: '12 tháng', price: 80000, durationDays: 365, hot: true },
+      { id: 5, name: 'VĨNH VIỄN', price: 150000, durationDays: 3650, full: true, badge: 'VIP TRỌN ĐỜI' }
+    ];
+    let selectedPkg = packages[0];
+    let discountPercent = 0;
+    let cleanUsername = '';
+
+    const guides = {
+      ios: [
+        ['Nhập Username Locket', 'Dán username hoặc link Locket của bạn rồi nhấn Kiểm tra trạng thái.'],
+        ['Chọn gói & Thanh toán', 'Chọn gói phù hợp và quét mã VietQR đúng số tiền, nội dung.'],
+        ['Nhập mã xác nhận', 'Nhận mã xác nhận từ shop sau khi chuyển khoản và bấm Kích hoạt ngay.'],
+        ['Tải hồ sơ DNS', 'Bấm vào nút Cài đặt hồ sơ DNS hiển thị trên màn hình kết quả.'],
+        ['Cài đặt trong Cài đặt iPhone', 'Vào Cài đặt -> Đã tải về hồ sơ -> Cài đặt cấu hình DNS.'],
+        ['Mở Locket & Trải nghiệm', 'Mở lại ứng dụng Locket để nhận huy hiệu Gold và toàn bộ tính năng VIP.']
+      ],
+      android: [
+        ['Nhập Username Locket', 'Dán username hoặc link Locket của bạn rồi nhấn Kiểm tra trạng thái.'],
+        ['Chọn gói & Thanh toán', 'Quét mã VietQR đúng số tiền và nội dung chuyển khoản được hiển thị.'],
+        ['Nhận mã kích hoạt', 'Sau khi thanh toán, nhập mã xác nhận để hệ thống xuất hồ sơ kích hoạt.'],
+        ['Tải tệp / Hồ sơ', 'Làm theo đường dẫn trả về trên màn hình kết quả.'],
+        ['Cài đặt cấu hình', 'Cài đặt ứng dụng / cấu hình theo hướng dẫn đi kèm.'],
+        ['Trải nghiệm Locket Gold', 'Mở ứng dụng Locket và tận hưởng quay video 30s, Full Caption.']
+      ]
+    };
+
+    function formatVND(n) { return Number(n).toLocaleString('vi-VN') + 'đ'; }
+    function extractUsername(raw) {
+      return raw.trim().replace(/^https?:\/\/(www\.)?locket\.(com|camera)\//i, '').replace(/^@/, '').split(/[/?#]/)[0];
     }
 
-    async function activate() {
-      const btn = document.getElementById('submitBtn');
-      const result = document.getElementById('result');
-      const username = document.getElementById('username').value.trim();
-      const durationDays = document.getElementById('duration').value;
-      const accessCode = document.getElementById('accessCode').value.trim();
+    function selectOS(os) {
+      currentOS = os;
+      document.getElementById('osIos').classList.toggle('active', os === 'ios');
+      document.getElementById('osAndroid').classList.toggle('active', os === 'android');
+      document.getElementById('osBadge').textContent = os === 'ios' ? '👑 Locket Gold iOS' : '📱 Locket Gold Android';
+      document.getElementById('osTitle').textContent = os === 'ios' ? 'Kích hoạt Locket Gold iOS' : 'Kích hoạt Locket Gold Android';
+      document.getElementById('guideTitle').textContent = os === 'ios' ? '📱 Hướng dẫn cài đặt Locket iOS' : '📱 Hướng dẫn cài đặt Locket Android';
+      renderGuide();
+    }
 
-      if (!username) {
-        result.className = 'box err';
-        result.textContent = 'Vui lòng nhập username Locket!';
-        return;
+    function renderGuide() {
+      document.getElementById('guideList').innerHTML = guides[currentOS].map((g, i) => `
+        <div class="guide-item">
+          <div class="guide-num">0${i + 1}</div>
+          <div><h4>${g[0]}</h4><p>${g[1]}</p></div>
+        </div>
+      `).join('');
+    }
+
+    function renderPackages() {
+      document.getElementById('pkgGrid').innerHTML = packages.map(p => `
+        <div class="pkg-card ${p.id === selectedPkg.id ? 'active' : ''} ${p.full ? 'full' : ''}" onclick="selectPkg(${p.id})">
+          ${p.badge ? `<div style="display:inline-block;background:#fef3c7;color:#b45309;font-size:10px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:6px;">${p.badge}</div><br/>` : ''}
+          <div>${p.hot ? '<span class="pkg-hot">HOT</span>' : ''}<strong>${p.name}</strong></div>
+          <div class="pkg-price">${formatVND(p.price)}</div>
+          <div class="pkg-days">${p.durationDays} ngày sử dụng</div>
+        </div>
+      `).join('');
+      updatePayButton();
+    }
+
+    function selectPkg(id) {
+      selectedPkg = packages.find(p => p.id === id) || packages[0];
+      renderPackages();
+    }
+
+    function getFinalPrice() {
+      return Math.max(1000, Math.round(selectedPkg.price * (100 - discountPercent) / 100));
+    }
+
+    function updatePayButton() {
+      document.getElementById('btnPay').textContent = `🔑 Thanh toán ${formatVND(getFinalPrice())} để kích hoạt`;
+    }
+
+    function applyVoucher() {
+      const code = document.getElementById('voucherInput').value.trim().toUpperCase();
+      const msg = document.getElementById('voucherMsg');
+      if (code === 'GIAM10') {
+        discountPercent = 10;
+        msg.style.color = '#15803d';
+        msg.textContent = '✓ Đã áp dụng giảm 10%!';
+      } else {
+        discountPercent = 0;
+        msg.style.color = '#dc2626';
+        msg.textContent = 'Mã giảm giá không hợp lệ hoặc đã hết hạn.';
       }
+      updatePayButton();
+    }
+
+    async function checkStatus() {
+      const raw = document.getElementById('usernameInput').value;
+      cleanUsername = extractUsername(raw);
+      if (!cleanUsername) { alert('Vui lòng nhập Username hoặc link Locket!'); return; }
+
+      const btn = document.getElementById('btnCheck');
+      btn.disabled = true;
+      btn.textContent = 'Đang kiểm tra...';
+
+      try {
+        const res = await fetch('/api/lookup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: cleanUsername })
+        });
+        const json = await res.json();
+        const badge = document.getElementById('statusBadge');
+        if (json.success && json.data && json.data.active) {
+          badge.className = 'badge-ok';
+          badge.textContent = '● Đang có Gold';
+        } else {
+          badge.className = 'badge-warn';
+          badge.textContent = '● Chưa kích hoạt';
+        }
+      } catch (e) {}
+
+      document.getElementById('resultCard').style.display = 'block';
+      backToPackages();
+      btn.disabled = false;
+      btn.textContent = '🔍 Kiểm tra trạng thái';
+    }
+
+    function showPayment() {
+      const orderId = Math.floor(100000 + Math.random() * 900000);
+      const amount = getFinalPrice();
+      const note = `LG ${orderId}`;
+      const qrUrl = `https://img.vietqr.io/image/${BANK_ID}-${ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(note)}`;
+
+      document.getElementById('qrImage').src = qrUrl;
+      document.getElementById('orderIdText').textContent = `#${orderId}`;
+      document.getElementById('orderAmountText').textContent = formatVND(amount);
+      document.getElementById('orderPkgText').textContent = selectedPkg.name;
+      document.getElementById('orderNoteText').textContent = note;
+
+      document.getElementById('packageSection').style.display = 'none';
+      document.getElementById('paymentSection').style.display = 'block';
+    }
+
+    function backToPackages() {
+      document.getElementById('packageSection').style.display = 'block';
+      document.getElementById('paymentSection').style.display = 'none';
+    }
+
+    async function confirmActivate() {
+      const btn = document.getElementById('btnActivate');
+      const box = document.getElementById('activateMsg');
+      const accessCode = document.getElementById('accessCodeInput').value.trim();
 
       btn.disabled = true;
-      btn.textContent = 'Đang xử lý...';
-      result.className = 'box';
-      result.textContent = '';
+      btn.textContent = 'Đang kích hoạt...';
+      box.innerHTML = '';
 
       try {
         const res = await fetch('/api/activate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, durationDays, accessCode })
+          body: JSON.stringify({
+            username: cleanUsername,
+            durationDays: selectedPkg.durationDays,
+            accessCode
+          })
         });
         const json = await res.json();
 
         if (json.success && json.data) {
           const link = json.data.installUrl || json.data.url;
-          result.className = 'box ok';
-          result.innerHTML = `
-            <strong>Kích hoạt thành công!</strong><br/>
-            Mã hồ sơ: <b>${json.data.activationCode}</b><br/>
-            Gói: ${json.data.packageName || durationDays + ' Ngày'}<br/>
-            <a class="btn-link" href="${link}" target="_blank">Cài đặt hồ sơ DNS ngay</a>
+          box.innerHTML = `
+            <div class="msg-box msg-ok">
+              <strong>🎉 Kích hoạt thành công cho @${cleanUsername}!</strong><br/>
+              Mã hồ sơ: <b>${json.data.activationCode}</b><br/>
+              <a href="${link}" target="_blank" class="btn-blue" style="display:inline-block;margin-top:8px;text-decoration:none;">📲 Cài đặt hồ sơ DNS ngay</a>
+            </div>
           `;
         } else {
-          result.className = 'box err';
-          result.textContent = json.error || 'Kích hoạt thất bại, vui lòng kiểm tra lại.';
+          box.innerHTML = `<div class="msg-box msg-err">${json.error || 'Kích hoạt thất bại.'}</div>`;
         }
       } catch (e) {
-        result.className = 'box err';
-        result.textContent = 'Có lỗi mạng xảy ra, vui lòng thử lại.';
+        box.innerHTML = `<div class="msg-box msg-err">Lỗi kết nối máy chủ, vui lòng thử lại.</div>`;
       } finally {
         btn.disabled = false;
         btn.textContent = 'Kích hoạt ngay';
       }
     }
 
-    loadPackages();
+    // Tải gói thật từ Uplocket nếu có
+    (async function loadApiPackages() {
+      try {
+        const res = await fetch('/api/packages');
+        const json = await res.json();
+        const list = Array.isArray(json.data) ? json.data : [];
+        if (list.length > 0) {
+          packages = list.map((p, idx) => ({
+            id: p.id || idx + 1,
+            name: p.name || p.packageName || `${p.durationDays} ngày`,
+            price: p.price || (p.durationDays >= 365 ? 80000 : 10000),
+            durationDays: p.durationDays || 30,
+            hot: true
+          }));
+          selectedPkg = packages[0];
+          renderPackages();
+        }
+      } catch (e) {}
+    })();
+
+    renderGuide();
+    renderPackages();
   </script>
 </body>
 </html>
