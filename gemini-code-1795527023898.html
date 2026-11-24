@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nâng cấp Locket Gold</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #f4f6f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .card { background: #fff; width: 100%; max-width: 440px; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    h2 { margin: 0 0 8px; color: #111; font-size: 22px; }
+    p.sub { margin: 0 0 20px; color: #666; font-size: 14px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #333; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 16px; font-size: 15px; }
+    button { width: 100%; padding: 13px; background: #f59e0b; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    button:disabled { background: #fcd34d; cursor: not-allowed; }
+    .box { margin-top: 18px; padding: 14px; border-radius: 10px; font-size: 14px; display: none; word-break: break-all; }
+    .box.ok { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; display: block; }
+    .box.err { background: #fef2f2; border: 1px solid #ef4444; color: #991b1b; display: block; }
+    .btn-link { display: inline-block; margin-top: 10px; padding: 10px 14px; background: #10b981; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Kích hoạt Locket Gold</h2>
+    <p class="sub">Nhập username Locket và mã xác nhận do shop cung cấp.</p>
+
+    <label for="username">Username Locket</label>
+    <input id="username" type="text" placeholder="Ví dụ: nguyenvana" />
+
+    <label for="duration">Chọn gói</label>
+    <select id="duration">
+      <option value="365">365 Ngày</option>
+    </select>
+
+    <label for="accessCode">Mã xác nhận đơn</label>
+    <input id="accessCode" type="text" placeholder="Nhập mã shop đã cấp" />
+
+    <button id="submitBtn" onclick="activate()">Kích hoạt ngay</button>
+
+    <div id="result" class="box"></div>
+  </div>
+
+  <script>
+    // Tải danh sách gói từ API của bạn
+    async function loadPackages() {
+      try {
+        const res = await fetch('/api/packages');
+        const json = await res.json();
+        const list = Array.isArray(json.data) ? json.data : (Array.isArray(json) ? json : []);
+        if (list.length > 0) {
+          const select = document.getElementById('duration');
+          select.innerHTML = list.map(pkg => {
+            const days = pkg.durationDays || pkg.days || 365;
+            const name = pkg.name || pkg.packageName || (days + ' Ngày');
+            return `<option value="${days}">${name}</option>`;
+          }).join('');
+        }
+      } catch (e) {
+        console.log('Dùng gói mặc định');
+      }
+    }
+
+    async function activate() {
+      const btn = document.getElementById('submitBtn');
+      const result = document.getElementById('result');
+      const username = document.getElementById('username').value.trim();
+      const durationDays = document.getElementById('duration').value;
+      const accessCode = document.getElementById('accessCode').value.trim();
+
+      if (!username) {
+        result.className = 'box err';
+        result.textContent = 'Vui lòng nhập username Locket!';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Đang xử lý...';
+      result.className = 'box';
+      result.textContent = '';
+
+      try {
+        const res = await fetch('/api/activate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, durationDays, accessCode })
+        });
+        const json = await res.json();
+
+        if (json.success && json.data) {
+          const link = json.data.installUrl || json.data.url;
+          result.className = 'box ok';
+          result.innerHTML = `
+            <strong>Kích hoạt thành công!</strong><br/>
+            Mã hồ sơ: <b>${json.data.activationCode}</b><br/>
+            Gói: ${json.data.packageName || durationDays + ' Ngày'}<br/>
+            <a class="btn-link" href="${link}" target="_blank">Cài đặt hồ sơ DNS ngay</a>
+          `;
+        } else {
+          result.className = 'box err';
+          result.textContent = json.error || 'Kích hoạt thất bại, vui lòng kiểm tra lại.';
+        }
+      } catch (e) {
+        result.className = 'box err';
+        result.textContent = 'Có lỗi mạng xảy ra, vui lòng thử lại.';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Kích hoạt ngay';
+      }
+    }
+
+    loadPackages();
+  </script>
+</body>
+</html>
