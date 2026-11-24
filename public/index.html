@@ -3,80 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nâng Cấp Locket Gold — Tự Động 24/7</title>
+  <title>Locket Gold Phan Đình — Hệ Thống Tự Động 24/7</title>
   <style>
     :root {
       --blue: #1649e6;
-      --blue-soft: #eff6ff;
+      --blue-dark: #0e2f9c;
       --gold: #f59e0b;
+      --gold-light: #fde047;
       --text: #0f172a;
       --muted: #64748b;
       --border: #dbeafe;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    html { scroll-behavior: smooth; }
     body {
       color: var(--text);
       background-color: #f8fafc;
       background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
       background-size: 28px 28px;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     .container { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
 
-    /* Header */
-    header { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 30; }
-    .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-    .brand { font-size: 20px; font-weight: 800; color: var(--blue); text-decoration: none; }
-    .nav-pills { display: flex; background: #f1f5f9; padding: 4px; border-radius: 999px; gap: 4px; }
-    .nav-pills a { text-decoration: none; color: #475569; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; }
-    .nav-pills a.active { background: var(--blue); color: #fff; }
+    /* Keyframes hiệu ứng */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35); }
+      50% { box-shadow: 0 10px 34px rgba(245, 158, 11, 0.65); }
+    }
+    @keyframes orbMove {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(24px, -18px) scale(1.08); }
+    }
 
-    /* Main 2-column grid */
+    .page-view { display: none; animation: fadeSlideUp 0.4s ease forwards; }
+    .page-view.active { display: block; }
+
+    /* Navbar */
+    header { background: rgba(255,255,255,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 40; }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 66px; gap: 12px; }
+    .brand { font-size: 19px; font-weight: 800; color: var(--blue); text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .brand span { background: linear-gradient(90deg, #1649e6, #f59e0b, #1649e6); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 4s linear infinite; }
+    .nav-pills { display: flex; background: #f1f5f9; padding: 4px; border-radius: 999px; gap: 4px; }
+    .nav-pills button, .nav-pills a { border: none; background: transparent; text-decoration: none; color: #475569; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 999px; cursor: pointer; transition: 0.2s; }
+    .nav-pills button.active, .nav-pills a:hover { background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgba(22,73,230,0.25); }
+    .status-pill { font-size: 12px; font-weight: 700; color: #059669; background: #ecfdf5; padding: 6px 12px; border-radius: 999px; border: 1px solid #a7f3d0; white-space: nowrap; }
+
+    /* Hero Trang chủ */
+    .hero {
+      position: relative; overflow: hidden; margin-top: 24px;
+      background: linear-gradient(135deg, #1a56f0 0%, #0e32a8 100%);
+      border-radius: 28px; padding: 42px 38px; color: #fff;
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 32px; align-items: center;
+      box-shadow: 0 22px 50px rgba(22,73,230,0.24);
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(45px); opacity: 0.35; pointer-events: none; animation: orbMove 7s ease-in-out infinite; }
+    .orb-1 { width: 220px; height: 220px; background: #fbbf24; top: -60px; right: -40px; }
+    .orb-2 { width: 180px; height: 180px; background: #60a5fa; bottom: -50px; left: -30px; animation-delay: -3s; }
+
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-bottom: 16px; }
+    .hero h1 { font-size: 40px; line-height: 1.15; font-weight: 900; margin-bottom: 16px; }
+    .gold-text { background: linear-gradient(90deg, #fde047, #f59e0b, #fff3b0, #fde047); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s linear infinite; }
+    .hero-sub { font-size: 15px; opacity: 0.9; margin-bottom: 22px; max-width: 480px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 24px; border-radius: 14px; font-weight: 800; font-size: 15px; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-gold { background: linear-gradient(135deg, #fde047, #f59e0b); color: #111827; animation: pulseGlow 2.4s infinite; }
+    .btn-glass { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.28); backdrop-filter: blur(6px); }
+
+    .hero-stats { display: flex; gap: 28px; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 18px; }
+    .hero-stats strong { display: block; font-size: 22px; color: var(--gold-light); }
+    .hero-stats span { font-size: 11px; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Phone Mockup bay nhẹ */
+    .phone-wrap { display: flex; justify-content: center; position: relative; z-index: 2; }
+    .phone { width: 230px; background: #0f172a; border-radius: 34px; padding: 12px; border: 4px solid #334155; box-shadow: 0 25px 50px rgba(0,0,0,0.4); animation: floatSlow 4s ease-in-out infinite; }
+    .phone-screen { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); border-radius: 24px; padding: 18px 12px; text-align: center; }
+    .gold-pill { display: inline-block; background: linear-gradient(135deg, #fde047, #f59e0b); color: #111; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 999px; margin-bottom: 12px; }
+    .cam-preview { height: 155px; border-radius: 18px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-weight: 800; margin-bottom: 14px; position: relative; }
+    .tag-30s { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.55); font-size: 11px; padding: 3px 8px; border-radius: 999px; }
+    .shutter { width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 4px solid var(--gold-light); margin: 0 auto; }
+
+    /* Bento Features */
+    section { margin-top: 40px; }
+    .sec-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+    .sec-sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card-bento { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid var(--border); transition: transform 0.25s, box-shadow 0.25s; }
+    .card-bento:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(22,73,230,0.08); }
+    .col-7 { grid-column: span 7; }
+    .col-5 { grid-column: span 5; }
+    .card-blue { background: linear-gradient(135deg, #1d4ed8, #1e40af); color: #fff; border: none; }
+    .card-gold { border: 2px solid #fde68a; background: #fffbeb; }
+    .card-bento h3 { font-size: 18px; margin-bottom: 8px; }
+    .card-bento p { font-size: 14px; opacity: 0.88; }
+
+    /* Giao diện Kích hoạt bên trong (#page-upgrade) */
     .main-grid { display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 20px; padding: 24px 0 48px; align-items: start; }
     .card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: 0 6px 24px rgba(15,23,42,0.04); margin-bottom: 18px; }
-
-    /* OS Switcher */
     .os-title { text-align: center; font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 10px; }
     .os-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f1f5f9; padding: 5px; border-radius: 14px; }
     .os-btn { border: none; background: transparent; padding: 11px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; color: #475569; transition: 0.2s; }
     .os-btn.active { background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgba(22,73,230,0.25); }
-
-    /* Blue Banner */
     .banner { background: linear-gradient(135deg, #1d4ed8, #1440c4); color: #fff; border-radius: 20px; padding: 24px; margin-bottom: 18px; }
     .banner-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap; }
-    .pill-gold { background: #fbbf24; color: #111; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; }
+    .pill-gold-sm { background: #fbbf24; color: #111; font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; }
     .pill-dark { background: rgba(0,0,0,0.25); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; }
-    .banner h1 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
-    .banner-checks { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; font-size: 12px; font-weight: 600; }
-    .banner-checks span { background: rgba(255,255,255,0.16); padding: 4px 10px; border-radius: 999px; }
-    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
     .mini-item { background: #fff; color: var(--text); padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; }
 
-    /* Lookup Form */
     .input-row { display: flex; gap: 10px; margin-top: 8px; }
     .input-row input { flex: 1; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 14px; outline: none; }
     .input-row input:focus { border-color: var(--blue); }
     .btn-blue { background: var(--blue); color: #fff; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; white-space: nowrap; }
     .btn-blue:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* Step 2: Check Result & Packages */
     .res-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
     .badge-warn { background: #fef3c7; color: #b45309; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
     .badge-ok { background: #dcfce7; color: #15803d; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
 
     .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
-    .pkg-card { border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: 0.15s; background: #fff; position: relative; }
-    .pkg-card:hover { border-color: #93c5fd; }
+    .pkg-card { border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; transition: 0.15s; background: #fff; }
+    .pkg-card:hover { border-color: #93c5fd; transform: translateY(-2px); }
     .pkg-card.active { border: 2px solid #f59e0b; background: #fffbeb; }
     .pkg-card.full { grid-column: span 2; }
     .pkg-hot { display: inline-block; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 6px; margin-right: 4px; }
     .pkg-price { font-size: 20px; font-weight: 800; color: #dc2626; margin: 6px 0 2px; }
     .pkg-days { font-size: 12px; color: var(--muted); }
-
     .voucher-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin: 16px 0; }
-    .voucher-box label { display: block; font-size: 11px; font-weight: 800; color: #475569; margin-bottom: 8px; }
 
-    /* Step 3: VietQR & Activation */
     .qr-wrap { border: 1.5px solid #bfdbfe; border-radius: 18px; padding: 20px; text-align: center; background: #fafcff; }
     .qr-img { width: 220px; height: 220px; object-fit: contain; border-radius: 14px; border: 1px solid #e2e8f0; background: #fff; padding: 8px; margin: 14px auto; display: block; }
     .order-info { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px 16px; text-align: left; margin-bottom: 14px; }
@@ -84,7 +153,6 @@
     .order-row:last-child { border-bottom: none; }
     .code-tag { background: #eff6ff; color: var(--blue); font-weight: 800; padding: 3px 8px; border-radius: 6px; }
 
-    /* Right Column Guide */
     .guide-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
     .guide-item { display: flex; gap: 12px; background: #f1f5ff; border: 1px solid #dbeafe; padding: 12px; border-radius: 14px; align-items: flex-start; }
     .guide-num { min-width: 26px; height: 26px; background: var(--blue); color: #fff; border-radius: 8px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
@@ -95,9 +163,23 @@
     .msg-ok { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; }
     .msg-err { background: #fef2f2; border: 1px solid #ef4444; color: #991b1b; }
 
+    /* Popup chào mừng */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,0.65); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; }
+    .modal-backdrop.show { display: flex; animation: fadeSlideUp 0.25s ease; }
+    .modal { width: 100%; max-width: 390px; background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
+    .modal-top { background: linear-gradient(135deg, #fde047, #f59e0b); padding: 26px 20px 20px; text-align: center; position: relative; }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; border-radius: 50%; border: none; background: rgba(0,0,0,0.12); font-weight: 700; cursor: pointer; }
+    .modal-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 11px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+    .btn-hide { width: 100%; margin-top: 10px; background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; padding: 10px; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; }
+
+    footer { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 13px; }
+
     @media (max-width: 860px) {
-      .main-grid { grid-template-columns: 1fr; }
-      .nav-pills { display: none; }
+      .hero, .main-grid { grid-template-columns: 1fr; }
+      .hero { padding: 28px 22px; }
+      .hero h1 { font-size: 30px; }
+      .col-7, .col-5 { grid-column: span 12; }
+      .status-pill { display: none; }
     }
     @media (max-width: 520px) {
       .pkg-grid, .mini-grid { grid-template-columns: 1fr; }
@@ -107,128 +189,226 @@
   </style>
 </head>
 <body>
+
+  <!-- Popup chào mừng -->
+  <div id="welcomeModal" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-top">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div style="font-size:32px;margin-bottom:6px;">👑</div>
+        <h3 style="font-size:21px;font-weight:900;">Locket Gold Phan Đình</h3>
+        <p style="font-size:13px;opacity:.85;">Mở khoá toàn bộ đặc quyền VIP chỉ từ 10.000đ</p>
+      </div>
+      <div style="padding:18px;">
+        <div class="modal-item">🎥 Mở khoá quay video 30s có âm thanh</div>
+        <div class="modal-item">🔒 Mở khoá đăng bài riêng tư &amp; xem mắt</div>
+        <div class="modal-item">✨ Mở khoá trọn bộ Full Caption</div>
+        <button onclick="closeModal(); showPage('upgrade');" class="btn btn-gold" style="width:100%;margin-top:6px;">🚀 Vào Nâng Cấp Ngay</button>
+        <button class="btn-hide" onclick="hideModal30m()">Tạm ẩn thông báo trong 30 phút</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thanh điều hướng -->
   <header>
     <div class="container nav">
-      <a href="#" class="brand">👑 Locket Gold</a>
+      <div class="brand" onclick="showPage('home')">👑 <span>Locket Gold Phan Đình</span></div>
       <nav class="nav-pills">
-        <a href="#">Trang chủ</a>
-        <a href="#" class="active">Nâng Gold</a>
-        <a href="#huong-dan">Hướng dẫn</a>
+        <button id="navHome" class="active" onclick="showPage('home')">Trang chủ</button>
+        <button id="navUpgrade" onclick="showPage('upgrade')">Nâng Gold</button>
       </nav>
+      <span class="status-pill">● Hoạt động 24/7</span>
     </div>
   </header>
 
-  <main class="container main-grid">
-    <!-- Cột trái -->
-    <div>
-      <!-- Chọn hệ điều hành -->
-      <div class="card">
-        <div class="os-title">Chọn hệ điều hành bạn đang sử dụng</div>
-        <div class="os-tabs">
-          <button id="osIos" class="os-btn active" onclick="selectOS('ios')">👑 Locket iOS</button>
-          <button id="osAndroid" class="os-btn" onclick="selectOS('android')">📱 Locket Android</button>
-        </div>
-      </div>
-
-      <!-- Banner -->
-      <div class="banner">
-        <div class="banner-top">
-          <span id="osBadge" class="pill-gold">📱 Locket Gold iOS</span>
-          <span class="pill-dark">● Kích hoạt tự động 24/7</span>
-        </div>
-        <h1 id="osTitle">Kích hoạt Locket Gold iOS</h1>
-        <div class="banner-checks">
-          <span>✓ Hồ sơ DNS riêng</span>
-          <span>✓ Không cần mật khẩu iCloud</span>
-        </div>
-        <div class="mini-grid">
-          <div class="mini-item">🎥 Quay video 30 giây</div>
-          <div class="mini-item">✨ Mở khoá Full Caption</div>
-          <div class="mini-item">⚡ Cấp hồ sơ tự động</div>
-          <div class="mini-item">👁️ Full tính năng VIP</div>
-        </div>
-      </div>
-
-      <!-- Kiểm tra trạng thái -->
-      <div class="card">
-        <h3 style="font-size:16px;">🔑 Kiểm tra &amp; Kích hoạt</h3>
-        <p style="font-size:13px;color:var(--muted);margin-top:2px;">Dán link Locket hoặc nhập Username để kiểm tra và chọn gói</p>
-        <div style="margin-top:12px;">
-          <label style="font-size:13px;font-weight:700;">Username hoặc Link Locket <span style="color:#ef4444;">*</span></label>
-          <div class="input-row">
-            <input id="usernameInput" type="text" placeholder="VD: locket.com/username hoặc username" />
-            <button id="btnCheck" class="btn-blue" onclick="checkStatus()">🔍 Kiểm tra trạng thái</button>
+  <!-- VIEW 1: TRANG CHỦ (Ở NGOÀI) -->
+  <div id="page-home" class="page-view active">
+    <main class="container">
+      <div class="hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div style="position:relative;z-index:2;">
+          <span class="hero-badge">⚡ Hệ thống tự động 24/7 cho iOS &amp; Android</span>
+          <h1>Mở Khoá Đặc Quyền<br/><span class="gold-text">Locket Gold Phan Đình</span></h1>
+          <p class="hero-sub">Kích hoạt nhanh chóng chỉ với Username Locket — hoàn toàn không cần mật khẩu iCloud, bảo mật tuyệt đối và hỗ trợ bảo hành suốt thời gian sử dụng.</p>
+          <div class="hero-actions">
+            <button onclick="showPage('upgrade')" class="btn btn-gold">👑 Vào Nâng Cấp Ngay</button>
+            <a href="#tinh-nang" class="btn btn-glass">✨ Xem tính năng VIP</a>
+          </div>
+          <div class="hero-stats">
+            <div><strong>10.000đ</strong><span>Giá trải nghiệm</span></div>
+            <div><strong>24/7</strong><span>Cấp hồ sơ tự động</span></div>
+            <div><strong>100%</strong><span>Không cần iCloud</span></div>
           </div>
         </div>
-      </div>
 
-      <!-- Kết quả kiểm tra + Chọn gói -->
-      <div id="resultCard" class="card" style="display:none;">
-        <div class="res-head">
-          <strong style="color:var(--blue);font-size:15px;">✓ Kết quả kiểm tra</strong>
-          <span id="statusBadge" class="badge-warn">● Chưa kích hoạt</span>
-        </div>
-
-        <!-- Màn chọn gói -->
-        <div id="packageSection">
-          <div style="text-align:center;">
-            <h3 style="font-size:18px;">Chọn gói Locket Gold</h3>
-            <p style="font-size:13px;color:var(--muted);">Chọn gói và quét mã VietQR để thanh toán</p>
-          </div>
-          <div id="pkgGrid" class="pkg-grid"></div>
-
-          <div class="voucher-box">
-            <label>✨ MÃ KHUYẾN MÃI / VOUCHER</label>
-            <div class="input-row" style="margin-top:0;">
-              <input id="voucherInput" type="text" placeholder="NHẬP MÃ GIẢM GIÁ (NẾU CÓ)..." />
-              <button class="btn-blue" style="background:#64748b;" onclick="applyVoucher()">ÁP DỤNG</button>
-            </div>
-            <div id="voucherMsg" style="font-size:12px;margin-top:6px;"></div>
-          </div>
-
-          <button id="btnPay" class="btn-blue" style="width:100%;padding:14px;font-size:15px;" onclick="showPayment()">🔑 Thanh toán 10.000đ để kích hoạt</button>
-        </div>
-
-        <!-- Màn thanh toán VietQR + Nhập mã kích hoạt -->
-        <div id="paymentSection" style="display:none;">
-          <div class="qr-wrap">
-            <span class="pill-dark" style="background:#dbeafe;color:var(--blue);">⚡ Thanh toán VietQR • MB Bank</span>
-            <h3 style="margin-top:8px;font-size:18px;">Quét mã VietQR để thanh toán</h3>
-            <p style="font-size:12px;color:var(--muted);">Chuyển khoản đúng số tiền &amp; nội dung bên dưới</p>
-            <img id="qrImage" class="qr-img" src="" alt="VietQR MB Bank" />
-
-            <div class="order-info">
-              <div class="order-row"><span>Ngân hàng / STK:</span><strong>MB Bank — 0775065697</strong></div>
-              <div class="order-row"><span>Mã đơn hàng:</span><strong id="orderIdText" style="color:var(--blue);">#000000</strong></div>
-              <div class="order-row"><span>Số tiền:</span><strong id="orderAmountText" style="color:#dc2626;">10.000đ</strong></div>
-              <div class="order-row"><span>Gói:</span><strong id="orderPkgText">1 tháng</strong></div>
-              <div class="order-row"><span>Nội dung:</span><span id="orderNoteText" class="code-tag">LG 000000</span></div>
-            </div>
-
-            <div style="text-align:left;background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:12px;">
-              <label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Nhập Mã xác nhận đơn (nhận từ shop sau khi chuyển khoản):</label>
-              <div class="input-row" style="margin-top:0;">
-                <input id="accessCodeInput" type="text" placeholder="Nhập mã xác nhận..." />
-                <button id="btnActivate" class="btn-blue" onclick="confirmActivate()">Kích hoạt ngay</button>
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-screen">
+              <span class="gold-pill">★ LOCKET GOLD</span>
+              <div class="cam-preview">
+                <span class="tag-30s">● 30s</span>
+                <span>Video 30s &amp;<br/>Full Caption</span>
               </div>
+              <div class="shutter"></div>
             </div>
-            <div id="activateMsg"></div>
-            <button onclick="backToPackages()" style="margin-top:12px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;">← Đổi gói khác</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Cột phải: Hướng dẫn -->
-    <aside id="huong-dan" class="card">
-      <h3 id="guideTitle" style="font-size:16px;">📱 Hướng dẫn cài đặt Locket iOS</h3>
-      <div id="guideList" class="guide-list"></div>
-    </aside>
-  </main>
+      <section id="tinh-nang">
+        <h2 class="sec-title">Đặc quyền Locket Gold trong tầm tay</h2>
+        <p class="sec-sub">Nâng cấp một lần, mở khoá toàn bộ tính năng bị giới hạn trên ứng dụng Locket</p>
+        <div class="bento">
+          <div class="card-bento card-blue col-7">
+            <h3>🎥 Quay &amp; Đăng Video Dài 30 Giây</h3>
+            <p>Không còn bị giới hạn vài giây ngắn ngủi. Ghi lại trọn vẹn khoảnh khắc cùng âm thanh sống động và giữ nguyên độ nét gốc.</p>
+          </div>
+          <div class="card-bento col-5">
+            <h3>👁️ Xem Ai Đã Xem Ảnh</h3>
+            <p>Biết chính xác những người bạn nào vừa mở xem khoảnh khắc Locket của bạn theo thời gian thực.</p>
+          </div>
+          <div class="card-bento col-5">
+            <h3>🔒 Đăng Bài Riêng Tư Chọn Lọc</h3>
+            <p>Tuỳ chỉnh danh sách người nhận cho từng bức ảnh hoặc khoảnh khắc đặc biệt.</p>
+          </div>
+          <div class="card-bento card-gold col-7">
+            <h3>✨ Mở Khoá Trọn Bộ Full Caption</h3>
+            <p>Sử dụng toàn bộ hiệu ứng chữ nghệ thuật, hiển thị khung giờ, thời tiết, phần trăm pin và trạng thái độc đáo.</p>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:28px;">
+          <button onclick="showPage('upgrade')" class="btn btn-gold" style="padding:15px 34px;font-size:16px;">🚀 Vào Trang Kích Hoạt Locket Gold</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- VIEW 2: TRANG KÍCH HOẠT (BÊN TRONG) -->
+  <div id="page-upgrade" class="page-view">
+    <main class="container main-grid">
+      <div>
+        <div class="card">
+          <div class="os-title">Chọn hệ điều hành bạn đang sử dụng</div>
+          <div class="os-tabs">
+            <button id="osIos" class="os-btn active" onclick="selectOS('ios')">👑 Locket iOS</button>
+            <button id="osAndroid" class="os-btn" onclick="selectOS('android')">📱 Locket Android</button>
+          </div>
+        </div>
+
+        <div class="banner">
+          <div class="banner-top">
+            <span id="osBadge" class="pill-gold-sm">👑 Locket Gold iOS</span>
+            <span class="pill-dark">● Cấp tự động 24/7</span>
+          </div>
+          <h2 id="osTitle" style="font-size:24px;font-weight:800;">Kích hoạt Locket Gold iOS</h2>
+          <div class="mini-grid">
+            <div class="mini-item">🎥 Quay video 30 giây</div>
+            <div class="mini-item">✨ Mở khoá Full Caption</div>
+            <div class="mini-item">⚡ Cấp hồ sơ tự động</div>
+            <div class="mini-item">🔒 Không cần iCloud</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;">🔑 Kiểm tra &amp; Kích hoạt</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:2px;">Dán link Locket hoặc nhập Username để kiểm tra và chọn gói</p>
+          <div style="margin-top:12px;">
+            <label style="font-size:13px;font-weight:700;">Username hoặc Link Locket <span style="color:#ef4444;">*</span></label>
+            <div class="input-row">
+              <input id="usernameInput" type="text" placeholder="VD: locket.com/username hoặc username" />
+              <button id="btnCheck" class="btn-blue" onclick="checkStatus()">🔍 Kiểm tra trạng thái</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultCard" class="card" style="display:none;">
+          <div class="res-head">
+            <strong style="color:var(--blue);font-size:15px;">✓ Kết quả kiểm tra</strong>
+            <span id="statusBadge" class="badge-warn">● Chưa kích hoạt</span>
+          </div>
+
+          <div id="packageSection">
+            <div style="text-align:center;">
+              <h3 style="font-size:18px;">Chọn gói Locket Gold</h3>
+              <p style="font-size:13px;color:var(--muted);">Chọn gói và quét mã VietQR để thanh toán</p>
+            </div>
+            <div id="pkgGrid" class="pkg-grid"></div>
+
+            <div class="voucher-box">
+              <label style="display:block;font-size:11px;font-weight:800;color:#475569;margin-bottom:8px;">✨ MÃ KHUYẾN MÃI / VOUCHER</label>
+              <div class="input-row" style="margin-top:0;">
+                <input id="voucherInput" type="text" placeholder="NHẬP MÃ GIẢM GIÁ (NẾU CÓ)..." />
+                <button class="btn-blue" style="background:#64748b;" onclick="applyVoucher()">ÁP DỤNG</button>
+              </div>
+              <div id="voucherMsg" style="font-size:12px;margin-top:6px;"></div>
+            </div>
+
+            <button id="btnPay" class="btn-blue" style="width:100%;padding:14px;font-size:15px;" onclick="showPayment()">🔑 Thanh toán 10.000đ để kích hoạt</button>
+          </div>
+
+          <div id="paymentSection" style="display:none;">
+            <div class="qr-wrap">
+              <span class="pill-dark" style="background:#dbeafe;color:var(--blue);">⚡ Thanh toán VietQR • MB Bank</span>
+              <h3 style="margin-top:8px;font-size:18px;">Quét mã VietQR để thanh toán</h3>
+              <p style="font-size:12px;color:var(--muted);">Chuyển khoản đúng số tiền &amp; nội dung bên dưới</p>
+              <img id="qrImage" class="qr-img" src="" alt="VietQR MB Bank" />
+
+              <div class="order-info">
+                <div class="order-row"><span>Ngân hàng / STK:</span><strong>MB Bank — 0775065697</strong></div>
+                <div class="order-row"><span>Mã đơn hàng:</span><strong id="orderIdText" style="color:var(--blue);">#000000</strong></div>
+                <div class="order-row"><span>Số tiền:</span><strong id="orderAmountText" style="color:#dc2626;">10.000đ</strong></div>
+                <div class="order-row"><span>Gói:</span><strong id="orderPkgText">1 tháng</strong></div>
+                <div class="order-row"><span>Nội dung:</span><span id="orderNoteText" class="code-tag">LG 000000</span></div>
+              </div>
+
+              <div style="text-align:left;background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:12px;">
+                <label style="font-size:12px;font-weight:700;display:block;margin-bottom:6px;">Nhập Mã xác nhận đơn (nhận từ shop sau khi chuyển khoản):</label>
+                <div class="input-row" style="margin-top:0;">
+                  <input id="accessCodeInput" type="text" placeholder="Nhập mã xác nhận..." />
+                  <button id="btnActivate" class="btn-blue" onclick="confirmActivate()">Kích hoạt ngay</button>
+                </div>
+              </div>
+              <div id="activateMsg"></div>
+              <button onclick="backToPackages()" style="margin-top:12px;background:none;border:none;color:var(--blue);font-weight:600;font-size:13px;cursor:pointer;">← Đổi gói khác</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card">
+        <h3 id="guideTitle" style="font-size:16px;">📱 Hướng dẫn cài đặt Locket iOS</h3>
+        <div id="guideList" class="guide-list"></div>
+      </aside>
+    </main>
+  </div>
+
+  <footer>© 2026 Locket Gold Phan Đình — Hệ thống kích hoạt tự động</footer>
 
   <script>
     const BANK_ID = 'MB';
     const ACCOUNT_NO = '0775065697';
+
+    // Chuyển trang Trang chủ <-> Nâng Gold
+    function showPage(page) {
+      document.getElementById('page-home').classList.toggle('active', page === 'home');
+      document.getElementById('page-upgrade').classList.toggle('active', page === 'upgrade');
+      document.getElementById('navHome').classList.toggle('active', page === 'home');
+      document.getElementById('navUpgrade').classList.toggle('active', page === 'upgrade');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Popup 30 phút
+    (function initModal() {
+      const hiddenUntil = Number(localStorage.getItem('hide_locket_modal') || 0);
+      if (Date.now() > hiddenUntil) document.getElementById('welcomeModal').classList.add('show');
+    })();
+    function closeModal() { document.getElementById('welcomeModal').classList.remove('show'); }
+    function hideModal30m() {
+      localStorage.setItem('hide_locket_modal', String(Date.now() + 30 * 60 * 1000));
+      closeModal();
+    }
 
     let currentOS = 'ios';
     let packages = [
@@ -419,7 +599,6 @@
       }
     }
 
-    // Tải gói thật từ Uplocket nếu có
     (async function loadApiPackages() {
       try {
         const res = await fetch('/api/packages');
